@@ -1,4 +1,4 @@
-# HOW TO RUN THE PROJECT :
+<img width="1847" height="739" alt="image" src="https://github.com/user-attachments/assets/cf86f8b4-274a-44f3-8e7d-dbb1933b9435" /># HOW TO RUN THE PROJECT :
 1/Go to the project directory:
 `cd transport`
 
@@ -25,4 +25,12 @@ Access the admin interface here:
 
 `http://127.0.0.1:8000/admin/`
 
+To clone this repository locally to your computer, run:
+
+```bash
+git clone https://github.com/kahinaa-dev/Projet_SI/tree/initial-branch
+```
+then navigate fel pc ta3ek cd Projet_SI  
+
+w lhamdoulilah salamat 
 
