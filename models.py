@@ -9,11 +9,16 @@ class client(models.Model):
     historique = models.DateTimeField(auto_now_add=  True)
 
 class user(models.Model):
+    ROLE_CHOICES = [
+        ('agent', 'Agent'),
+        ('responsable', 'Responsable'),
+        ('administrator', 'Administrator'),
+    ]
     nameuser = models.CharField(max_length=50)
     fnameuser = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50)
     password = models.CharField(max_length=50)
-    role = models.CharField(max_length=50)
+    role = models.CharField(max_length=20 , choices=ROLE_CHOICES)
 
 class destination(models.Model):
     city = models.CharField(max_length=50)
@@ -22,25 +27,60 @@ class destination(models.Model):
     basic_price = models.FloatField()
 
 class service_type(models.Model):
-    sname = models.CharField(max_length=50,unique=True)
+    SERVICE_CHOICES = [
+        ('standard', 'Standard'),
+        ('express', 'Express'),
+        ('international', 'International'),
+    ]
+
+    sname = models.CharField(
+        max_length=20,
+        choices=SERVICE_CHOICES,
+        unique=True
+    )
     delivery = models.DateField()
     description = models.TextField()
 
-class pricing(models.Model):
-    id_destination= models.ForeignKey(destination,on_delete=models.CASCADE)
-    names = models.ForeignKey(service_type,to_field='sname',on_delete=models.CASCADE)
-    pricing_weight=models.FloatField()
-    pricing_volum=models.FloatField()
-    calcul_auto_price =models.FloatField()
+class Pricing(models.Model):
+    destination = models.ForeignKey(destination, on_delete=models.CASCADE)
+    service_type = models.ForeignKey(service_type, on_delete=models.CASCADE)
+    pricing_weight = models.FloatField()
+    pricing_volume = models.FloatField()
+    calcul_auto_price = models.FloatField()
+
+    class Meta:
+        unique_together = ('destination', 'service_type')  
+
+
+
+
+class Pricing(models.Model):
+    destination= models.ForeignKey(destination, on_delete=models.CASCADE)
+    service_type = models.ForeignKey(service_type, on_delete=models.CASCADE)
+    pricing_weight = models.FloatField()
+    pricing_volume = models.FloatField()
+    calcul_auto_price = models.FloatField()
+
+
 
 class expedition(models.Model):
+    status_choices=[
+        ('created','Created'),
+        ('in transaction','In transaction'),
+        ('in delivery','In delivery'),
+        ('delivered','Delivered'),
+        ('in delay','In delay'),
+        ('error','Error')
+    ]
+
+
     id_client=models.ForeignKey(client,on_delete=models.CASCADE)
     id_destination=models.ForeignKey(destination,on_delete=models.CASCADE)
     names = models.ForeignKey(service_type,to_field='sname',on_delete=models.CASCADE)
     weight = models.FloatField()
     volume = models.FloatField()
     total_price=models.FloatField()
-    status = models.CharField(max_length=20)
+    status = models.CharField(max_length=20,choices=status_choices)
     creation_date = models.DateTimeField(auto_now=True)
     description = models.TextField()
 
@@ -60,7 +100,7 @@ class payment(models.Model):
 class reclamation(models.Model):
     rec_nbr = models.IntegerField()
     unique_nbr = models.ForeignKey(expedition,on_delete=models.CASCADE)
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50,choices=[('expedition','Expedition'),('invoice','Invoice'), ('service','Service')])
     description = models.TextField()
     status = models.CharField(max_length=50)
 
