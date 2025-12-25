@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Services Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Services Management</h2>
+            <p class="text-muted">Manage delivery service types and pricing</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'tables' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Tables
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Add Service Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Add New Service</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.nom.id_for_label }}" class="form-label">Service Name</label>
+                        {{ form.nom }}
+                        {% if form.nom.errors %}
+                            <div class="text-danger">{{ form.nom.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.multiplicateur_tarif.id_for_label }}" class="form-label">Price Multiplier</label>
+                        {{ form.multiplicateur_tarif }}
+                        {% if form.multiplicateur_tarif.errors %}
+                            <div class="text-danger">{{ form.multiplicateur_tarif.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ form.temps_livraison_base.id_for_label }}" class="form-label">Base Delivery Time (hours)</label>
+                        {{ form.temps_livraison_base }}
+                        {% if form.temps_livraison_base.errors %}
+                            <div class="text-danger">{{ form.temps_livraison_base.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ form.poids_max.id_for_label }}" class="form-label">Max Weight (kg)</label>
+                        {{ form.poids_max }}
+                        {% if form.poids_max.errors %}
+                            <div class="text-danger">{{ form.poids_max.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ form.est_disponible.id_for_label }}" class="form-label">Available</label>
+                        {{ form.est_disponible }}
+                        {% if form.est_disponible.errors %}
+                            <div class="text-danger">{{ form.est_disponible.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add Service
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Services List -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Existing Services</h5>
+            <span class="badge bg-primary">{{ services.count }} Services</span>
+        </div>
+        <div class="card-body">
+            {% if services %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Description</th>
+                                <th>Price Multiplier</th>
+                                <th>Base Delivery Time</th>
+                                <th>Max Weight</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                                <tr>
+                                    <td>{{ service.nom }}</td>
+                                    <td>{{ service.description|truncatechars:50 }}</td>
+                                    <td>{{ service.multiplicateur_tarif }}x</td>
+                                    <td>{{ service.temps_livraison_base }}h</td>
+                                    <td>{{ service.poids_max }} kg</td>
+                                    <td>
+                                        {% if service.est_disponible %}
+                                            <span class="badge bg-success">Available</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Unavailable</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="editService({{ service.id }})">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <a href="{% url 'delete_service' service.id %}" 
+                                               class="btn btn-outline-danger" 
+                                               onclick="return confirm('Are you sure you want to delete this service?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-box-seam" style="font-size: 3rem; color: #6c757d;"></i>
+                    <p class="text-muted mt-2">No services found. Add your first service above.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
+    inputs.forEach(input => {
+        input.classList.add('form-control');
+    });
+});
+
+function editService(id) {
+    alert('Edit functionality would be implemented here for service ID: ' + id);
+}
+</script>
+{% endblock %}

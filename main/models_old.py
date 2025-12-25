@@ -1,5 +1,22 @@
 from django.db import models
 
+class Shipment(models.Model):
+    name = models.CharField(max_length=100)
+    shipment_number = models.CharField(max_length=50, unique=True)
+    origin = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
+    weight = models.FloatField()
+    volume = models.FloatField(default=0.0, help_text="Volume en m³")
+    service = models.CharField(max_length=50)
+    status = models.CharField(max_length=50)
+    estimated_delivery = models.DateField()
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    prix_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return f"{self.name} - {self.shipment_number}"
+
 class Client(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -80,23 +97,6 @@ class Tarification(models.Model):
 
     def __str__(self):
         return f"{self.service.nom} - {self.destination.ville}: {self.tarif_par_kg}/kg"
-
-class Shipment(models.Model):
-    name = models.CharField(max_length=100)
-    shipment_number = models.CharField(max_length=50, unique=True)
-    origin = models.CharField(max_length=100)
-    destination = models.CharField(max_length=100)
-    weight = models.FloatField()
-    volume = models.FloatField(default=0.0, help_text="Volume en m³")
-    service = models.CharField(max_length=50)
-    status = models.CharField(max_length=50)
-    estimated_delivery = models.DateField()
-    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    prix_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
-    def __str__(self):
-        return f"{self.name} - {self.shipment_number}"
 
 class Tournee(models.Model):
     numero = models.CharField(max_length=50, unique=True)
