@@ -1,4 +1,4 @@
-<img width="1847" height="739" alt="image" src="https://github.com/user-attachments/assets/cf86f8b4-274a-44f3-8e7d-dbb1933b9435" /># HOW TO RUN THE PROJECT :
+# HOW TO RUN THE PROJECT :
 1/Go to the project directory:
 `cd transport`
 
