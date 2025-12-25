@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Database Tables Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Database Tables Management</h2>
+            <p class="text-muted">Complete access to all database entities for insert, modify, delete, search, and print operations.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Management Cards -->
+    <div class="row">
+        <!-- Clients -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Clients</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage client information, contacts, balance, and history.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">{{ clients.count }} clients</span>
+                        <div>
+                            <a href="{% url 'manage_clients' %}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chauffeurs -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-badge"></i> Chauffeurs</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage driver data, permits, availability, and professional info.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-success">{{ chauffeurs.count }} chauffeurs</span>
+                        <div>
+                            <a href="{% url 'manage_chauffeurs' %}" class="btn btn-sm btn-success">
+                                <i class="bi bi-pencil"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Véhicules -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-truck"></i> Véhicules</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage vehicle fleet, registration, capacity, consumption, status.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-warning text-dark">{{ vehicules.count }} véhicules</span>
+                        <div>
+                            <a href="{% url 'manage_vehicules' %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Destinations -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Destinations</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage cities, countries, zones, base rates, distances.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-info">{{ destinations.count }} destinations</span>
+                        <div>
+                            <a href="{% url 'manage_destinations' %}" class="btn btn-sm btn-info">
+                                <i class="bi bi-pencil"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-box"></i> Types de Service</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage service types: Standard, Express, International with parameters.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-secondary">{{ services.count }} services</span>
+                        <div>
+                            <a href="{% url 'manage_services' %}" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-pencil"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarifications -->
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-currency-euro"></i> Tarifications</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage pricing combinations (service × destination) for auto-calculation.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-danger">{{ tarifications.count }} tarifications</span>
+                        <div>
+                            <a href="{% url 'manage_tarifications' %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-pencil"></i> Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Statistics -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Quick Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2">
+                            <h4 class="text-primary">{{ clients.count }}</h4>
+                            <small>Total Clients</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-success">{{ chauffeurs.count }}</h4>
+                            <small>Total Chauffeurs</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-warning">{{ vehicules.count }}</h4>
+                            <small>Total Véhicules</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-info">{{ destinations.count }}</h4>
+                            <small>Total Destinations</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-secondary">{{ services.count }}</h4>
+                            <small>Total Services</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-danger">{{ tarifications.count }}</h4>
+                            <small>Total Tarifications</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

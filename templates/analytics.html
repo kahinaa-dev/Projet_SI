@@ -1,0 +1,514 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Analytics & Tableaux de Bord</h2>
+            <p class="text-muted">Comprehensive analysis of commercial and operational performance</p>
+        </div>
+    </div>
+
+    <!-- Time Period Selector -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <select class="form-select" id="periodSelector">
+                <option value="12">Last 12 Months</option>
+                <option value="24">Last 24 Months</option>
+                <option value="36">Last 36 Months</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="refreshCharts()">
+                <i class="bi bi-arrow-clockwise"></i> Refresh Data
+            </button>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-success" onclick="exportReport()">
+                <i class="bi bi-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Commercial Analysis Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4><i class="bi bi-graph-up-arrow text-primary"></i> Commercial Analysis</h4>
+        </div>
+        
+        <!-- Shipment Evolution Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Shipment Evolution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="shipmentEvolutionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Evolution Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Revenue Evolution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueEvolutionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Clients -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Top Clients by Volume</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topClientsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Destinations -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Most Requested Destinations</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topDestinationsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operational Analysis Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4><i class="bi bi-truck text-success"></i> Operational Analysis</h4>
+        </div>
+        
+        <!-- Tour Evolution -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Tour Performance</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="tourEvolutionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delivery Success Rate -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Delivery Success Rate</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="deliverySuccessChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Drivers -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Top Performing Drivers</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topDriversChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Incident Zones -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Incident Hotspots</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="incidentZonesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Summary -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Key Performance Indicators</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2">
+                            <h4 class="text-primary" id="totalShipments">0</h4>
+                            <small>Total Shipments</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-success" id="totalRevenue">€0</h4>
+                            <small>Total Revenue</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-info" id="successRate">0%</h4>
+                            <small>Success Rate</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-warning" id="avgDeliveryTime">0h</h4>
+                            <small>Avg Delivery Time</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-danger" id="totalIncidents">0</h4>
+                            <small>Total Incidents</small>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="text-secondary" id="activeClients">0</h4>
+                            <small>Active Clients</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Periods -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Peak Activity Periods</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="activityPeriodsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Chart configurations
+const chartColors = {
+    primary: '#0d6efd',
+    success: '#198754',
+    warning: '#ffc107',
+    danger: '#dc3545',
+    info: '#0dcaf0',
+    secondary: '#6c757d'
+};
+
+// Initialize all charts
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    loadAnalyticsData();
+});
+
+function initializeCharts() {
+    // Shipment Evolution Chart
+    const shipmentCtx = document.getElementById('shipmentEvolutionChart').getContext('2d');
+    window.shipmentEvolutionChart = new Chart(shipmentCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Monthly Shipments',
+                data: [],
+                borderColor: chartColors.primary,
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Revenue Evolution Chart
+    const revenueCtx = document.getElementById('revenueEvolutionChart').getContext('2d');
+    window.revenueEvolutionChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Monthly Revenue (€)',
+                data: [],
+                borderColor: chartColors.success,
+                backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Top Clients Chart
+    const clientsCtx = document.getElementById('topClientsChart').getContext('2d');
+    window.topClientsChart = new Chart(clientsCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Shipments',
+                data: [],
+                backgroundColor: chartColors.info
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Top Destinations Chart
+    const destinationsCtx = document.getElementById('topDestinationsChart').getContext('2d');
+    window.topDestinationsChart = new Chart(destinationsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                    chartColors.primary,
+                    chartColors.success,
+                    chartColors.warning,
+                    chartColors.danger,
+                    chartColors.info
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Tour Evolution Chart
+    const tourCtx = document.getElementById('tourEvolutionChart').getContext('2d');
+    window.tourEvolutionChart = new Chart(tourCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Monthly Tours',
+                data: [],
+                borderColor: chartColors.warning,
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Delivery Success Chart
+    const successCtx = document.getElementById('deliverySuccessChart').getContext('2d');
+    window.deliverySuccessChart = new Chart(successCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Delivered', 'Failed', 'Delayed'],
+            datasets: [{
+                label: 'Count',
+                data: [0, 0, 0],
+                backgroundColor: [
+                    chartColors.success,
+                    chartColors.danger,
+                    chartColors.warning
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Top Drivers Chart
+    const driversCtx = document.getElementById('topDriversChart').getContext('2d');
+    window.topDriversChart = new Chart(driversCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Successful Deliveries',
+                data: [],
+                backgroundColor: chartColors.success
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Incident Zones Chart
+    const incidentCtx = document.getElementById('incidentZonesChart').getContext('2d');
+    window.incidentZonesChart = new Chart(incidentCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Incidents',
+                data: [],
+                backgroundColor: chartColors.danger
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Activity Periods Chart
+    const activityCtx = document.getElementById('activityPeriodsChart').getContext('2d');
+    window.activityPeriodsChart = new Chart(activityCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Shipments',
+                data: [],
+                backgroundColor: chartColors.primary
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
+function loadAnalyticsData() {
+    // Simulate loading data from API
+    // In real implementation, this would fetch from Django views
+    updateChartsWithSampleData();
+    updateKPIs();
+}
+
+function updateChartsWithSampleData() {
+    // Sample data for demonstration
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Update shipment evolution
+    window.shipmentEvolutionChart.data.labels = months;
+    window.shipmentEvolutionChart.data.datasets[0].data = [120, 135, 125, 145, 160, 155, 170, 165, 180, 175, 190, 185];
+    window.shipmentEvolutionChart.update();
+
+    // Update revenue evolution
+    window.revenueEvolutionChart.data.labels = months;
+    window.revenueEvolutionChart.data.datasets[0].data = [12000, 13500, 12500, 14500, 16000, 15500, 17000, 16500, 18000, 17500, 19000, 18500];
+    window.revenueEvolutionChart.update();
+
+    // Update top clients
+    window.topClientsChart.data.labels = ['Client A', 'Client B', 'Client C', 'Client D', 'Client E'];
+    window.topClientsChart.data.datasets[0].data = [45, 38, 32, 28, 25];
+    window.topClientsChart.update();
+
+    // Update top destinations
+    window.topDestinationsChart.data.labels = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Nice'];
+    window.topDestinationsChart.data.datasets[0].data = [30, 25, 20, 15, 10];
+    window.topDestinationsChart.update();
+
+    // Update tour evolution
+    window.tourEvolutionChart.data.labels = months;
+    window.tourEvolutionChart.data.datasets[0].data = [20, 22, 21, 24, 26, 25, 28, 27, 30, 29, 32, 31];
+    window.tourEvolutionChart.update();
+
+    // Update delivery success
+    window.deliverySuccessChart.data.datasets[0].data = [850, 45, 60];
+    window.deliverySuccessChart.update();
+
+    // Update top drivers
+    window.topDriversChart.data.labels = ['Driver A', 'Driver B', 'Driver C', 'Driver D', 'Driver E'];
+    window.topDriversChart.data.datasets[0].data = [95, 88, 82, 78, 75];
+    window.topDriversChart.update();
+
+    // Update incident zones
+    window.incidentZonesChart.data.labels = ['Zone A', 'Zone B', 'Zone C', 'Zone D'];
+    window.incidentZonesChart.data.datasets[0].data = [12, 8, 6, 4];
+    window.incidentZonesChart.update();
+
+    // Update activity periods
+    window.activityPeriodsChart.data.datasets[0].data = [120, 135, 125, 145, 160, 155, 170, 165, 180, 175, 190, 185];
+    window.activityPeriodsChart.update();
+}
+
+function updateKPIs() {
+    // Update KPI values with sample data
+    document.getElementById('totalShipments').textContent = '1,855';
+    document.getElementById('totalRevenue').textContent = '€185,500';
+    document.getElementById('successRate').textContent = '89.2%';
+    document.getElementById('avgDeliveryTime').textContent = '24.5h';
+    document.getElementById('totalIncidents').textContent = '30';
+    document.getElementById('activeClients').textContent = '156';
+}
+
+function refreshCharts() {
+    loadAnalyticsData();
+}
+
+function exportReport() {
+    // Export functionality
+    alert('Export feature would generate PDF/Excel report with all analytics data');
+}
+</script>
+{% endblock %}

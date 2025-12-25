@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Management System - Tours</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+   {% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="bi bi-truck"></i> Transport System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tables' %}">
+                            <i class="bi bi-table"></i> Tables
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shipments' %}">
+                            <i class="bi bi-box-seam"></i> Shipments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'tours' %}">
+                            <i class="bi bi-map"></i> Tours
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'billing' %}">
+                            <i class="bi bi-receipt"></i> Billing
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'incidents' %}">
+                            <i class="bi bi-exclamation-triangle"></i> Incidents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'complaints' %}">
+                            <i class="bi bi-chat-dots"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'analytics' %}">
+                            <i class="bi bi-graph-up"></i> Analytics
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h2>Tour Management</h2>
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newTourModal">
+                    <i class="bi bi-plus-circle"></i> Create Tour
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Tours</h5>
+                        <h2>12</h5>
+                        <small>Currently in progress</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Completed Today</h5>
+                        <h2>8</h5>
+                        <small>Successfully delivered</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Scheduled</h5>
+                        <h2>15</h5>
+                        <small>For tomorrow</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Available Drivers</h5>
+                        <h2>6</h5>
+                        <small>Ready for assignment</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tour Cards -->
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between">
+                            <span>TOUR001</span>
+                            <span class="badge bg-light text-dark">Active</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6>NYC Downtown Route</h6>
+                        <p class="mb-2"><small><i class="bi bi-person"></i> Mike Wilson</small></p>
+                        <p class="mb-2"><small><i class="bi bi-truck"></i> Truck 001</small></p>
+                        <p class="mb-2"><small><i class="bi bi-box-seam"></i> 8 shipments</small></p>
+                        <p class="mb-2"><small><i class="bi bi-clock"></i> Started: 8:00 AM</small></p>
+                        <p class="mb-2"><small><i class="bi bi-geo-alt"></i> 5 completed, 3 pending</small></p>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" style="width: 62%">62%</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tourModal">
+                                <i class="bi bi-eye"></i> Details
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-map"></i> Map
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <div class="d-flex justify-content-between">
+                            <span>TOUR002</span>
+                            <span class="badge bg-light text-dark">Completed</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6>Brooklyn Express</h6>
+                        <p class="mb-2"><small><i class="bi bi-person"></i> Sarah Davis</small></p>
+                        <p class="mb-2"><small><i class="bi bi-truck"></i> Truck 002</small></p>
+                        <p class="mb-2"><small><i class="bi bi-box-seam"></i> 6 shipments</small></p>
+                        <p class="mb-2"><small><i class="bi bi-clock"></i> Completed: 3:30 PM</small></p>
+                        <p class="mb-2"><small><i class="bi bi-check-circle"></i> All delivered successfully</small></p>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" style="width: 100%">100%</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tourModal">
+                                <i class="bi bi-eye"></i> Details
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-download"></i> Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-header bg-warning text-white">
+                        <div class="d-flex justify-content-between">
+                            <span>TOUR003</span>
+                            <span class="badge bg-light text-dark">Scheduled</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6>Queens Route</h6>
+                        <p class="mb-2"><small><i class="bi bi-person"></i> Tom Brown</small></p>
+                        <p class="mb-2"><small><i class="bi bi-truck"></i> Truck 003</small></p>
+                        <p class="mb-2"><small><i class="bi bi-box-seam"></i> 10 shipments</small></p>
+                        <p class="mb-2"><small><i class="bi bi-clock"></i> Starts: 7:00 AM</small></p>
+                        <p class="mb-2"><small><i class="bi bi-calendar"></i> Tomorrow</small></p>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-secondary" style="width: 0%">0%</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tourModal">
+                                <i class="bi bi-eye"></i> Details
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <div class="d-flex justify-content-between">
+                            <span>TOUR004</span>
+                            <span class="badge bg-light text-dark">In Progress</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6>Manhattan Express</h6>
+                        <p class="mb-2"><small><i class="bi bi-person"></i> John Driver</small></p>
+                        <p class="mb-2"><small><i class="bi bi-truck"></i> Truck 004</small></p>
+                        <p class="mb-2"><small><i class="bi bi-box-seam"></i> 7 shipments</small></p>
+                        <p class="mb-2"><small><i class="bi bi-clock"></i> Started: 9:30 AM</small></p>
+                        <p class="mb-2"><small><i class="bi bi-geo-alt"></i> 2 completed, 5 pending</small></p>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-info" style="width: 28%">28%</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#tourModal">
+                                <i class="bi bi-eye"></i> Details
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-map"></i> Track
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Tour Modal -->
+    <div class="modal fade" id="newTourModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Tour</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tour Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Driver</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Driver</option>
+                                    <option>Mike Wilson</option>
+                                    <option>Sarah Davis</option>
+                                    <option>Tom Brown</option>
+                                    <option>John Driver</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Vehicle</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Vehicle</option>
+                                    <option>Truck 001 - Ford Transit</option>
+                                    <option>Truck 002 - Mercedes Sprinter</option>
+                                    <option>Truck 003 - Ford Transit</option>
+                                    <option>Truck 004 - Mercedes Sprinter</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Estimated Duration</label>
+                                <input type="text" class="form-control" placeholder="e.g., 8 hours">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Priority</label>
+                                <select class="form-select">
+                                    <option>Normal</option>
+                                    <option>High</option>
+                                    <option>Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Available Shipments</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>ID</th>
+                                            <th>Customer</th>
+                                            <th>Destination</th>
+                                            <th>Priority</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input"></td>
+                                            <td>TRK001</td>
+                                            <td>John Doe</td>
+                                            <td>123 Main St</td>
+                                            <td><span class="badge bg-warning">Medium</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input"></td>
+                                            <td>TRK002</td>
+                                            <td>Jane Smith</td>
+                                            <td>456 Oak Ave</td>
+                                            <td><span class="badge bg-success">Low</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="checkbox" class="form-check-input"></td>
+                                            <td>TRK003</td>
+                                            <td>Bob Johnson</td>
+                                            <td>789 Pine Rd</td>
+                                            <td><span class="badge bg-danger">High</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> Create Tour
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tour Details Modal -->
+    <div class="modal fade" id="tourModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tour Details: TOUR001</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h6>NYC Downtown Route</h6>
+                            <span class="badge bg-primary me-2">Active</span>
+                            <span class="badge bg-info">In Progress</span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Tour Information</strong><br>
+                            <small class="text-muted">
+                                Driver: Mike Wilson<br>
+                                Vehicle: Truck 001 - Ford Transit<br>
+                                Started: 8:00 AM<br>
+                                Estimated End: 4:00 PM<br>
+                                Priority: Normal
+                            </small>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Progress</strong><br>
+                            <small class="text-muted">
+                                Total Shipments: 8<br>
+                                Completed: 5<br>
+                                Pending: 3<br>
+                                Progress: 62%<br>
+                                Current Location: Downtown Manhattan
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Shipment List</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer</th>
+                                        <th>Address</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-success">
+                                        <td>TRK001</td>
+                                        <td>John Doe</td>
+                                        <td>123 Main St</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>9:15 AM</td>
+                                    </tr>
+                                    <tr class="table-success">
+                                        <td>TRK002</td>
+                                        <td>Jane Smith</td>
+                                        <td>456 Oak Ave</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>10:30 AM</td>
+                                    </tr>
+                                    <tr class="table-success">
+                                        <td>TRK003</td>
+                                        <td>Bob Johnson</td>
+                                        <td>789 Pine Rd</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>11:45 AM</td>
+                                    </tr>
+                                    <tr class="table-success">
+                                        <td>TRK004</td>
+                                        <td>Alice Cooper</td>
+                                        <td>321 Elm St</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>1:00 PM</td>
+                                    </tr>
+                                    <tr class="table-success">
+                                        <td>TRK005</td>
+                                        <td>Tom Wilson</td>
+                                        <td>654 Maple Dr</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>2:15 PM</td>
+                                    </tr>
+                                    <tr class="table-warning">
+                                        <td>TRK006</td>
+                                        <td>Carol White</td>
+                                        <td>987 Cedar Ln</td>
+                                        <td><span class="badge bg-warning">In Transit</span></td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr class="table-secondary">
+                                        <td>TRK007</td>
+                                        <td>David Brown</td>
+                                        <td>147 Birch Way</td>
+                                        <td><span class="badge bg-secondary">Pending</span></td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr class="table-secondary">
+                                        <td>TRK008</td>
+                                        <td>Emma Davis</td>
+                                        <td>258 Spruce St</td>
+                                        <td><span class="badge bg-secondary">Pending</span></td>
+                                        <td>-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button class="btn btn-primary btn-sm me-2">
+                                <i class="bi bi-map"></i> View Map
+                            </button>
+                            <button class="btn btn-info btn-sm me-2">
+                                <i class="bi bi-telephone"></i> Contact Driver
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-warning btn-sm me-2">
+                                <i class="bi bi-exclamation-triangle"></i> Report Issue
+                            </button>
+                            <button class="btn btn-success btn-sm">
+                                <i class="bi bi-check-circle"></i> Complete Tour
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

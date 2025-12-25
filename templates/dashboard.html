@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Management System - Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+   {% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="bi bi-truck"></i> Transport System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tables' %}">
+                            <i class="bi bi-table"></i> Tables
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shipments' %}">
+                            <i class="bi bi-box-seam"></i> Shipments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tours' %}">
+                            <i class="bi bi-map"></i> Tours
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'billing' %}">
+                            <i class="bi bi-receipt"></i> Billing
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'incidents' %}">
+                            <i class="bi bi-exclamation-triangle"></i> Incidents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'complaints' %}">
+                            <i class="bi bi-chat-dots"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'analytics' %}">
+                            <i class="bi bi-graph-up"></i> Analytics
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <h2 class="mb-4">Dashboard</h2>
+        
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Shipments</h5>
+                        <h2>47</h2>
+                        <small>+12% from last month</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Completed Today</h5>
+                        <h2>23</h2>
+                        <small>+8% from yesterday</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Deliveries</h5>
+                        <h2>12</h2>
+                        <small>3 high priority</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Drivers</h5>
+                        <h2>8</h2>
+                        <small>2 on break</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4>Quick Actions</h4>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="bi bi-plus-circle text-primary" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">New Shipment</h6>
+                                <p class="text-muted">Create new shipment</p>
+                                <a href="{% url 'shipments' %}" class="btn btn-primary btn-sm">Create</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="bi bi-map text-success" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">Create Tour</h6>
+                                <p class="text-muted">Plan delivery route</p>
+                                <a href="{% url 'tours' %}" class="btn btn-success btn-sm">Plan</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="bi bi-receipt text-warning" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">Generate Invoice</h6>
+                                <p class="text-muted">Create billing invoice</p>
+                                <a href="{% url 'billing' %}" class="btn btn-warning btn-sm">Generate</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="bi bi-graph-up text-info" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">View Reports</h6>
+                                <p class="text-muted">Analytics dashboard</p>
+                                <a href="{% url 'analytics' %}" class="btn btn-info btn-sm">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-box-seam text-success"></i>
+                                    <span class="ms-2">New shipment #1234 created</span>
+                                </div>
+                                <small class="text-muted">5 minutes ago</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-check-circle text-primary"></i>
+                                    <span class="ms-2">Shipment #1230 delivered successfully</span>
+                                </div>
+                                <small class="text-muted">15 minutes ago</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                                    <span class="ms-2">Delivery incident reported for #1228</span>
+                                </div>
+                                <small class="text-muted">1 hour ago</small>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-map text-info"></i>
+                                    <span class="ms-2">Tour #45 started</span>
+                                </div>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>System Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Fleet Utilization</span>
+                                <span>82%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 82%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>On-Time Delivery</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Customer Satisfaction</span>
+                                <span>4.2/5</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: 84%"></div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            <small>All systems operational</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

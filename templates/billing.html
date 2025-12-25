@@ -1,0 +1,529 @@
+{% extends 'base.html' %}
+
+{% block title %}Billing & Payments{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Billing & Payments Management</h2>
+            <p class="text-muted">Invoice generation, payment tracking, and financial management</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-success" onclick="generateNewInvoice()">
+                <i class="bi bi-plus-circle"></i> New Invoice
+            </button>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Financial Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5>Total Invoices</h5>
+                    <h3 id="totalInvoices">0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5>Paid Amount</h5>
+                    <h3 id="paidAmount">€0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5>Pending Amount</h5>
+                    <h3 id="pendingAmount">€0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5>Overdue Amount</h5>
+                    <h3 id="overdueAmount">€0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Management Tabs -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="billingTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab">
+                        <i class="bi bi-file-earmark-text"></i> Invoices
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab">
+                        <i class="bi bi-cash"></i> Payments
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab">
+                        <i class="bi bi-plus-square"></i> Create Invoice
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="billingTabContent">
+                <!-- Invoices Tab -->
+                <div class="tab-pane fade show active" id="invoices" role="tabpanel">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="Search invoices..." id="invoiceSearch">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="invoiceStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="Non payée">Unpaid</option>
+                                <option value="Partiellement payée">Partially Paid</option>
+                                <option value="Payée">Paid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" id="invoiceDateFilter">
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-outline-primary" onclick="exportInvoices()">
+                                <i class="bi bi-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Client</th>
+                                    <th>Date</th>
+                                    <th>Amount HT</th>
+                                    <th>TVA (19%)</th>
+                                    <th>Total TTC</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoicesTableBody">
+                                <!-- Invoices will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payments Tab -->
+                <div class="tab-pane fade" id="payments" role="tabpanel">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" placeholder="Search payments..." id="paymentSearch">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="paymentMethodFilter">
+                                <option value="">All Methods</option>
+                                <option value="Espèces">Cash</option>
+                                <option value="Carte bancaire">Card</option>
+                                <option value="Virement">Transfer</option>
+                                <option value="Chèque">Check</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" id="paymentDateFilter">
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-outline-success" onclick="exportPayments()">
+                                <i class="bi bi-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Invoice #</th>
+                                    <th>Client</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentsTableBody">
+                                <!-- Payments will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Create Invoice Tab -->
+                <div class="tab-pane fade" id="create" role="tabpanel">
+                    <form id="createInvoiceForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Client</label>
+                                <select class="form-select" id="clientSelect" required>
+                                    <option value="">Select a client</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Invoice Date</label>
+                                <input type="date" class="form-control" id="invoiceDate" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <h5>Shipments to Include</h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="selectAllShipments"></th>
+                                                <th>Shipment #</th>
+                                                <th>Origin</th>
+                                                <th>Destination</th>
+                                                <th>Weight</th>
+                                                <th>Service</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="shipmentsSelection">
+                                            <!-- Available shipments will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Total HT</label>
+                                <input type="text" class="form-control" id="totalHT" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">TVA (19%)</label>
+                                <input type="text" class="form-control" id="totalTVA" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Total TTC</label>
+                                <input type="text" class="form-control" id="totalTTC" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Generate Invoice
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="resetInvoiceForm()">
+                                    <i class="bi bi-x-circle"></i> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Record Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm">
+                    <input type="hidden" id="paymentInvoiceId">
+                    <div class="mb-3">
+                        <label class="form-label">Invoice #</label>
+                        <input type="text" class="form-control" id="paymentInvoiceNumber" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount Due</label>
+                        <input type="text" class="form-control" id="paymentAmountDue" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Amount</label>
+                        <input type="number" class="form-control" id="paymentAmount" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-select" id="paymentMethod" required>
+                            <option value="">Select method</option>
+                            <option value="Espèces">Cash</option>
+                            <option value="Carte bancaire">Card</option>
+                            <option value="Virement">Transfer</option>
+                            <option value="Chèque">Check</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Date</label>
+                        <input type="date" class="form-control" id="paymentDate" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="recordPayment()">Record Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize billing data
+document.addEventListener('DOMContentLoaded', function() {
+    loadBillingData();
+    loadClients();
+    loadAvailableShipments();
+    
+    // Set today's date as default
+    document.getElementById('invoiceDate').valueAsDate = new Date();
+    document.getElementById('paymentDate').valueAsDate = new Date();
+});
+
+function loadBillingData() {
+    // Load invoices and payments
+    // In real implementation, this would fetch from Django API
+    loadInvoices();
+    loadPayments();
+    updateFinancialSummary();
+}
+
+function loadInvoices() {
+    // Sample data - replace with API call
+    const invoices = [
+        { id: 1, number: 'INV-2025-001', client: 'Client A', date: '2025-01-15', ht: 1000, tva: 190, ttc: 1190, status: 'Payée' },
+        { id: 2, number: 'INV-2025-002', client: 'Client B', date: '2025-01-16', ht: 1500, tva: 285, ttc: 1785, status: 'Non payée' },
+        { id: 3, number: 'INV-2025-003', client: 'Client C', date: '2025-01-17', ht: 800, tva: 152, ttc: 952, status: 'Partiellement payée' }
+    ];
+    
+    const tbody = document.getElementById('invoicesTableBody');
+    tbody.innerHTML = '';
+    
+    invoices.forEach(invoice => {
+        const statusClass = invoice.status === 'Payée' ? 'success' : invoice.status === 'Non payée' ? 'danger' : 'warning';
+        const row = `
+            <tr>
+                <td>${invoice.number}</td>
+                <td>${invoice.client}</td>
+                <td>${invoice.date}</td>
+                <td>€${invoice.ht}</td>
+                <td>€${invoice.tva}</td>
+                <td>€${invoice.ttc}</td>
+                <td><span class="badge bg-${statusClass}">${invoice.status}</span></td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary" onclick="viewInvoice(${invoice.id})">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-success" onclick="openPaymentModal(${invoice.id}, '${invoice.number}', ${invoice.ttc})">
+                            <i class="bi bi-cash"></i>
+                        </button>
+                        <button class="btn btn-info" onclick="printInvoice(${invoice.id})">
+                            <i class="bi bi-printer"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+function loadPayments() {
+    // Sample data - replace with API call
+    const payments = [
+        { id: 1, invoice: 'INV-2025-001', client: 'Client A', amount: 1190, method: 'Virement', date: '2025-01-20' },
+        { id: 2, invoice: 'INV-2025-003', client: 'Client C', amount: 500, method: 'Carte bancaire', date: '2025-01-21' }
+    ];
+    
+    const tbody = document.getElementById('paymentsTableBody');
+    tbody.innerHTML = '';
+    
+    payments.forEach(payment => {
+        const row = `
+            <tr>
+                <td>PAY-${payment.id.toString().padStart(4, '0')}</td>
+                <td>${payment.invoice}</td>
+                <td>${payment.client}</td>
+                <td>€${payment.amount}</td>
+                <td>${payment.method}</td>
+                <td>${payment.date}</td>
+                <td>
+                    <button class="btn btn-outline-info btn-sm" onclick="printReceipt(${payment.id})">
+                        <i class="bi bi-printer"></i> Receipt
+                    </button>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+function updateFinancialSummary() {
+    // Calculate totals from sample data
+    document.getElementById('totalInvoices').textContent = '3';
+    document.getElementById('paidAmount').textContent = '€1,690';
+    document.getElementById('pendingAmount').textContent = '€1,785';
+    document.getElementById('overdueAmount').textContent = '€0';
+}
+
+function loadClients() {
+    // Load clients for dropdown
+    const clients = ['Client A', 'Client B', 'Client C', 'Client D'];
+    const select = document.getElementById('clientSelect');
+    
+    clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client;
+        option.textContent = client;
+        select.appendChild(option);
+    });
+}
+
+function loadAvailableShipments() {
+    // Load shipments that can be invoiced
+    const shipments = [
+        { id: 1, number: 'TRK123456', origin: 'Paris', destination: 'Lyon', weight: 5, service: 'Express', amount: 250 },
+        { id: 2, number: 'TRK789012', origin: 'Marseille', destination: 'Toulouse', weight: 3, service: 'Standard', amount: 150 },
+        { id: 3, number: 'TRK345678', origin: 'Nice', destination: 'Bordeaux', weight: 8, service: 'International', amount: 450 }
+    ];
+    
+    const tbody = document.getElementById('shipmentsSelection');
+    tbody.innerHTML = '';
+    
+    shipments.forEach(shipment => {
+        const row = `
+            <tr>
+                <td><input type="checkbox" class="shipment-checkbox" data-amount="${shipment.amount}"></td>
+                <td>${shipment.number}</td>
+                <td>${shipment.origin}</td>
+                <td>${shipment.destination}</td>
+                <td>${shipment.weight}kg</td>
+                <td>${shipment.service}</td>
+                <td>€${shipment.amount}</td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+    
+    // Add event listeners for checkboxes
+    document.querySelectorAll('.shipment-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', calculateInvoiceTotals);
+    });
+    
+    // Select all functionality
+    document.getElementById('selectAllShipments').addEventListener('change', function() {
+        document.querySelectorAll('.shipment-checkbox').forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        calculateInvoiceTotals();
+    });
+}
+
+function calculateInvoiceTotals() {
+    const checkedBoxes = document.querySelectorAll('.shipment-checkbox:checked');
+    let totalHT = 0;
+    
+    checkedBoxes.forEach(checkbox => {
+        totalHT += parseFloat(checkbox.dataset.amount);
+    });
+    
+    const totalTVA = totalHT * 0.19;
+    const totalTTC = totalHT + totalTVA;
+    
+    document.getElementById('totalHT').value = `€${totalHT.toFixed(2)}`;
+    document.getElementById('totalTVA').value = `€${totalTVA.toFixed(2)}`;
+    document.getElementById('totalTTC').value = `€${totalTTC.toFixed(2)}`;
+}
+
+function openPaymentModal(invoiceId, invoiceNumber, amountDue) {
+    document.getElementById('paymentInvoiceId').value = invoiceId;
+    document.getElementById('paymentInvoiceNumber').value = invoiceNumber;
+    document.getElementById('paymentAmountDue').value = `€${amountDue}`;
+    document.getElementById('paymentAmount').max = amountDue;
+    
+    new bootstrap.Modal(document.getElementById('paymentModal')).show();
+}
+
+function recordPayment() {
+    // Validate and record payment
+    const amount = document.getElementById('paymentAmount').value;
+    const method = document.getElementById('paymentMethod').value;
+    const date = document.getElementById('paymentDate').value;
+    
+    if (!amount || !method || !date) {
+        alert('Please fill all payment fields');
+        return;
+    }
+    
+    // In real implementation, this would send data to Django backend
+    alert(`Payment of €${amount} recorded for invoice ${document.getElementById('paymentInvoiceNumber').value}`);
+    
+    // Close modal and refresh data
+    bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+    loadBillingData();
+}
+
+function viewInvoice(invoiceId) {
+    // View invoice details
+    alert(`Viewing invoice details for ID: ${invoiceId}`);
+}
+
+function printInvoice(invoiceId) {
+    // Print invoice
+    alert(`Printing invoice ID: ${invoiceId}`);
+}
+
+function printReceipt(paymentId) {
+    // Print payment receipt
+    alert(`Printing receipt for payment ID: ${paymentId}`);
+}
+
+function exportInvoices() {
+    alert('Exporting invoices to Excel/CSV');
+}
+
+function exportPayments() {
+    alert('Exporting payments to Excel/CSV');
+}
+
+function resetInvoiceForm() {
+    document.getElementById('createInvoiceForm').reset();
+    document.getElementById('invoiceDate').valueAsDate = new Date();
+    document.querySelectorAll('.shipment-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    calculateInvoiceTotals();
+}
+
+function generateNewInvoice() {
+    // Switch to create tab
+    document.getElementById('create-tab').click();
+}
+</script>
+{% endblock %}

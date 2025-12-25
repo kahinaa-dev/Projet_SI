@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport & Delivery Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-lg">
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-truck text-primary" style="font-size: 3rem;"></i>
+                                <h3 class="mt-2">Transport Management System</h3>
+                            </div>
+                            <form id="loginForm" action="{% url 'dashboard' %}" method="GET">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Enter any email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Enter any password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                                <div class="mt-3 text-center">
+                                    <small class="text-muted">Hint: Any email/password works for demo</small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboardSection" class="d-none">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="bi bi-truck"></i> Transport System
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('tables')">
+                                <i class="bi bi-table"></i> Tables
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('shipments')">
+                                <i class="bi bi-box-seam"></i> Shipments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('tours')">
+                                <i class="bi bi-map"></i> Tours
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('billing')">
+                                <i class="bi bi-receipt"></i> Billing
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('incidents')">
+                                <i class="bi bi-exclamation-triangle"></i> Incidents
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('complaints')">
+                                <i class="bi bi-chat-dots"></i> Complaints
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('analytics')">
+                                <i class="bi bi-graph-up"></i> Analytics
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="logout()">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container-fluid mt-4">
+            <!-- Dashboard Section -->
+            <div id="dashboardContent" class="content-section">
+                <h2 class="mb-4">Dashboard</h2>
+                
+                <!-- Favorites Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4>Quick Access</h4>
+                        <div id="favoritesSection" class="row">
+                            <!-- Dynamic favorites will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Active Shipments</h5>
+                                <h2 id="activeShipmentsCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Completed Today</h5>
+                                <h2 id="completedTodayCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Pending Deliveries</h5>
+                                <h2 id="pendingDeliveriesCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Active Drivers</h5>
+                                <h2 id="activeDriversCount">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Section -->
+            <div id="tablesContent" class="content-section d-none">
+                <h2 class="mb-4">Database Tables Management</h2>
+                <button class="btn btn-primary mb-3" onclick="openTableModal('clients')">
+                    <i class="bi bi-people"></i> Manage Clients
+                </button>
+                <button class="btn btn-primary mb-3 ms-2" onclick="openTableModal('drivers')">
+                    <i class="bi bi-person-badge"></i> Manage Drivers
+                </button>
+                <button class="btn btn-primary mb-3 ms-2" onclick="openTableModal('vehicles')">
+                    <i class="bi bi-truck"></i> Manage Vehicles
+                </button>
+                <button class="btn btn-primary mb-3 ms-2" onclick="openTableModal('destinations')">
+                    <i class="bi bi-geo-alt"></i> Manage Destinations
+                </button>
+                <button class="btn btn-primary mb-3 ms-2" onclick="openTableModal('services')">
+                    <i class="bi bi-box"></i> Manage Services
+                </button>
+                <button class="btn btn-primary mb-3 ms-2" onclick="openTableModal('pricing')">
+                    <i class="bi bi-currency-euro"></i> Manage Pricing
+                </button>
+
+                <!-- Table Data Display -->
+                <div id="tableDataContainer" class="mt-4">
+                    <!-- Dynamic table content will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Shipments Section -->
+            <div id="shipmentsContent" class="content-section d-none">
+                <h2 class="mb-4">Shipment Management</h2>
+                <button class="btn btn-primary mb-3" onclick="openShipmentModal()">
+                    <i class="bi bi-plus-circle"></i> Create New Shipment
+                </button>
+                
+                <!-- Shipment Tracking -->
+                <div id="shipmentTrackingContainer" class="mt-4">
+                    <!-- Dynamic shipment tracking will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Tours Section -->
+            <div id="toursContent" class="content-section d-none">
+                <h2 class="mb-4">Tour Management</h2>
+                <button class="btn btn-primary mb-3" onclick="openTourModal()">
+                    <i class="bi bi-plus-circle"></i> Create New Tour
+                </button>
+                
+                <!-- Route Visualization -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <div id="mapContainer" class="border rounded" style="height: 500px;">
+                            <!-- Map will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="tourDetailsContainer">
+                            <!-- Tour details will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Section -->
+            <div id="billingContent" class="content-section d-none">
+                <h2 class="mb-4">Billing & Payment Processing</h2>
+                <button class="btn btn-primary mb-3" onclick="generateInvoice()">
+                    <i class="bi bi-receipt"></i> Generate Invoice
+                </button>
+                
+                <!-- Invoice Display -->
+                <div id="invoiceContainer" class="mt-4">
+                    <!-- Dynamic invoice content will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Incidents Section -->
+            <div id="incidentsContent" class="content-section d-none">
+                <h2 class="mb-4">Incident Management</h2>
+                <button class="btn btn-primary mb-3" onclick="openIncidentModal()">
+                    <i class="bi bi-exclamation-triangle"></i> Report Incident
+                </button>
+                
+                <!-- Incidents List -->
+                <div id="incidentsContainer" class="mt-4">
+                    <!-- Dynamic incidents list will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Complaints Section -->
+            <div id="complaintsContent" class="content-section d-none">
+                <h2 class="mb-4">Complaint Management</h2>
+                <button class="btn btn-primary mb-3" onclick="openComplaintModal()">
+                    <i class="bi bi-chat-dots"></i> Submit Complaint
+                </button>
+                
+                <!-- Complaints List -->
+                <div id="complaintsContainer" class="mt-4">
+                    <!-- Dynamic complaints list will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analyticsContent" class="content-section d-none">
+                <h2 class="mb-4">Analytics & Business Intelligence</h2>
+                
+                <!-- Export Buttons -->
+                <div class="mb-3">
+                    <button class="btn btn-success" onclick="exportAnalytics('pdf')">
+                        <i class="bi bi-file-pdf"></i> Export PDF
+                    </button>
+                    <button class="btn btn-success ms-2" onclick="exportAnalytics('excel')">
+                        <i class="bi bi-file-excel"></i> Export Excel
+                    </button>
+                </div>
+                
+                <!-- Charts Container -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Shipment Evolution</h5>
+                                <canvas id="shipmentChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Revenue Trends</h5>
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Table Management Modal -->
+    <div class="modal fade" id="tableModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tableModalTitle">Table Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="tableModalBody">
+                    <!-- Dynamic modal content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shipment Modal -->
+    <div class="modal fade" id="shipmentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Shipment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="shipmentModalBody">
+                    <!-- Dynamic shipment form -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tour Modal -->
+    <div class="modal fade" id="tourModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Tour</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="tourModalBody">
+                    <!-- Dynamic tour form -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incident Modal -->
+    <div class="modal fade" id="incidentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Report Incident</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="incidentModalBody">
+                    <!-- Dynamic incident form -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaint Modal -->
+    <div class="modal fade" id="complaintModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Submit Complaint</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="complaintModalBody">
+                    <!-- Dynamic complaint form -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/tables.js"></script>
+    <script src="js/shipments.js"></script>
+    <script src="js/tours.js"></script>
+    <script src="js/billing.js"></script>
+    <script src="js/incidents.js"></script>
+    <script src="js/complaints.js"></script>
+    <script src="js/analytics.js"></script>
+</body>
+</html>

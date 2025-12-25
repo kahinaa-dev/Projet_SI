@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Management System - Tables</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="bi bi-truck"></i> Transport System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'tables' %}">
+                            <i class="bi bi-table"></i> Tables
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'shipments' %}">
+                            <i class="bi bi-box-seam"></i> Shipments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tours' %}">
+                            <i class="bi bi-map"></i> Tours
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'billing' %}">
+                            <i class="bi bi-receipt"></i> Billing
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'incidents' %}">
+                            <i class="bi bi-exclamation-triangle"></i> Incidents
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'complaints' %}">
+                            <i class="bi bi-chat-dots"></i> Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'analytics' %}">
+                            <i class="bi bi-graph-up"></i> Analytics
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <h2 class="mb-4">Database Tables Management</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Clients</h5>
+                        <p class="text-muted">Manage customer information and contact details</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#clientsModal">
+                            <i class="bi bi-pencil"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <iWTi class="bi bi-person-badge text-success" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Drivers</h5>
+                        <p class="text-muted">Manage driver profiles and assignments</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#driversModal">
+                            <i class="bi bi-pencil"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-truck text-warning" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Vehicles</h5>
+                        <p class="text-muted">Manage fleet vehicles and maintenance</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#vehiclesModal">
+                            <i class="bi bi-pencil"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-geo-alt text-info" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Destinations</h5>
+                        <p class="text-muted">Manage delivery locations and addresses</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#destinationsModal">
+                            <i class="bi bi-pencil"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-box text-secondary" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Services</h5>
+                        <p class="text-muted">Manage service types and options</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#servicesModal">
+                            <i class="bi bi-pencil"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-currency-euro text-success" style="font-size: 2rem;"></i>
+                        <h5 class="mt-2">Pricing</h5>
+                        <p class="text-muted">Manage pricing rules and rates</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pricingModal">
+                            <i class="bi bi-pencil"></i> Manage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for each table -->
+    <div class="modal fade" id="clientsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Clients Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>John Doe</td>
+                                    <td>john@example.com</td>
+                                    <td>123-456-7890</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Jane Smith</td>
+                                    <td>jane@example.com</td>
+                                    <td>098-765-4321</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add New Client
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="driversModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Drivers Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>License</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Mike Wilson</td>
+                                    <td>DL123456</td>
+                                    <td>111-222-3333</td>
+                                    <td><span class="badge bg-success">Available</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Sarah Davis</td>
+                                    <td>DL789012</td>
+                                    <td>444-555-6666</td>
+                                    <td><span class="badge bg-primary">On Duty</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add New Driver
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="vehiclesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Vehicles Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Plate</th>
+                                    <th>Make</th>
+                                    <th>Model</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>ABC-123</td>
+                                    <td>Ford</td>
+                                    <td>Transit</td>
+                                    <td>2000kg</td>
+                                    <td><span class="badge bg-success">Available</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>XYZ-789</td>
+                                    <td>Mercedes</td>
+                                    <td>Sprinter</td>
+                                    <td>1500kg</td>
+                                    <td><span class="badge bg-warning">In Use</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add New Vehicle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="destinationsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Destinations Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>ZIP</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Central Warehouse</td>
+                                    <td>123 Storage St</td>
+                                    <td>New York</td>
+                                    <td>10001</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>North Distribution</td>
+                                    <td>456 North Ave</td>
+                                    <td>Boston</td>
+                                    <td>02108</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add New Destination
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="servicesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Services Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Duration</th>
+                                    <th>Price</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Standard Delivery</td>
+                                    <td>Regular delivery service</td>
+                                    <td>2-3 days</td>
+                                    <td>€15.00</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Express Delivery</td>
+                                    <td>Fast delivery service</td>
+                                    <td>Same day</td>
+                                    <td>€25.00</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add New Service
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="pricingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pricing Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Service</th>
+                                    <th>Weight Range</th>
+                                    <th>Price</th>
+                                    <th>Zone</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Standard</td>
+                                    <td>0-5kg</td>
+                                    <td>€15.00</td>
+                                    <td>Local</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Standard</td>
+                                    <td>5-10kg</td>
+                                    <td>€20.00</td>
+                                    <td>Local</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Add New Pricing Rule
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

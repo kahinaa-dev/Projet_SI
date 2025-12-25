@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Vehicules Management{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Vehicules Management</h2>
+            <p class="text-muted">Manage fleet vehicles and maintenance</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'tables' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Tables
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Add Vehicule Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Add New Vehicle</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.immatriculation.id_for_label }}" class="form-label">Registration Number</label>
+                        {{ form.immatriculation }}
+                        {% if form.immatriculation.errors %}
+                            <div class="text-danger">{{ form.immatriculation.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.type.id_for_label }}" class="form-label">Vehicle Type</label>
+                        {{ form.type }}
+                        {% if form.type.errors %}
+                            <div class="text-danger">{{ form.type.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.marque.id_for_label }}" class="form-label">Make/Brand</label>
+                        {{ form.marque }}
+                        {% if form.marque.errors %}
+                            <div class="text-danger">{{ form.marque.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.capacite.id_for_label }}" class="form-label">Capacity (kg)</label>
+                        {{ form.capacite }}
+                        {% if form.capacite.errors %}
+                            <div class="text-danger">{{ form.capacite.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.consommation.id_for_label }}" class="form-label">Fuel Consumption (L/100km)</label>
+                        {{ form.consommation }}
+                        {% if form.consommation.errors %}
+                            <div class="text-danger">{{ form.consommation.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.etat.id_for_label }}" class="form-label">Status</label>
+                        {{ form.etat }}
+                        {% if form.etat.errors %}
+                            <div class="text-danger">{{ form.etat.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.date_achat.id_for_label }}" class="form-label">Purchase Date</label>
+                        {{ form.date_achat }}
+                        {% if form.date_achat.errors %}
+                            <div class="text-danger">{{ form.date_achat.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.dernier_entretien.id_for_label }}" class="form-label">Last Maintenance</label>
+                        {{ form.dernier_entretien }}
+                        {% if form.dernier_entretien.errors %}
+                            <div class="text-danger">{{ form.dernier_entretien.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add Vehicle
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vehicles List -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Existing Vehicles</h5>
+            <span class="badge bg-primary">{{ vehicules.count }} Vehicles</span>
+        </div>
+        <div class="card-body">
+            {% if vehicules %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Registration</th>
+                                <th>Type</th>
+                                <th>Make</th>
+                                <th>Capacity</th>
+                                <th>Fuel Consumption</th>
+                                <th>Status</th>
+                                <th>Purchase Date</th>
+                                <th>Last Maintenance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vehicule in vehicules %}
+                                <tr>
+                                    <td>{{ vehicule.immatriculation }}</td>
+                                    <td>{{ vehicule.type }}</td>
+                                    <td>{{ vehicule.marque }}</td>
+                                    <td>{{ vehicule.capacite }} kg</td>
+                                    <td>{{ vehicule.consommation }} L/100km</td>
+                                    <td>
+                                        {% if vehicule.etat == 'Disponible' %}
+                                            <span class="badge bg-success">{{ vehicule.etat }}</span>
+                                        {% elif vehicule.etat == 'En service' %}
+                                            <span class="badge bg-primary">{{ vehicule.etat }}</span>
+                                        {% elif vehicule.etat == 'Maintenance' %}
+                                            <span class="badge bg-warning">{{ vehicule.etat }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ vehicule.etat }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ vehicule.date_achat }}</td>
+                                    <td>{{ vehicule.dernier_entretien }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="editVehicule({{ vehicule.id }})">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <a href="{% url 'delete_vehicule' vehicule.id %}" 
+                                               class="btn btn-outline-danger" 
+                                               onclick="return confirm('Are you sure you want to delete this vehicle?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-truck" style="font-size: 3rem; color: #6c757d;"></i>
+                    <p class="text-muted mt-2">No vehicles found. Add your first vehicle above.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="date"], input[type="number"], textarea, select');
+    inputs.forEach(input => {
+        input.classList.add('form-control');
+    });
+    
+    const dateInputs = document.querySelectorAll('input[name="date_achat"], input[name="dernier_entretien"]');
+    dateInputs.forEach(input => {
+        input.type = 'date';
+    });
+});
+
+function editVehicule(id) {
+    alert('Edit functionality would be implemented here for vehicle ID: ' + id);
+}
+</script>
+{% endblock %}
